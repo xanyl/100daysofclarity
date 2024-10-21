@@ -39,13 +39,46 @@
 
 
 ;;Day-21 list Cont. and Intro to Unwrapping
- (define-data-var list-day-21 (list 5 uint) (list u1 u2 u3 u4 u5))
+ (define-data-var list-day-21 (list 5 uint) (list u1 u2 u3 u5))
  (define-read-only (list-length) 
     (len (var-get list-day-21))
  )
 
  (define-public (add-to-list (new-num uint)) 
     (ok (var-set list-day-21
-        (as-max-len? (var-get list-day-21) u5))
+        (unwrap! 
+            (as-max-len? (append (var-get list-day-21) new-num) u5)
+        (err u0)) 
     ))
  )
+
+ ;;Day - 22 - Unwrapping
+
+ (define-public (unwrap-example (new-num uint)) 
+    (ok (var-set list-day-21
+        (unwrap! 
+            (as-max-len? (append (var-get list-day-21) new-num) u5)
+        (err "Error list at max-length")) 
+    ))
+ )
+
+  (define-public (unwrap-panic-example (new-num uint)) 
+    (ok (var-set list-day-21
+        (unwrap-panic (as-max-len? (append (var-get list-day-21) new-num) u5)) 
+    ))
+ )
+
+ (define-public (unwrap-err-example (input (response uint uint)))
+    (ok (unwrap-err! input (err u10)))
+ )
+
+ (define-public (try-example (input (response uint uint))) 
+    (ok (try! input))
+ )
+
+ ;;Unwrap! : optionals and response
+ ;;Unwrap-err! : response
+ ;;Unwrap-panic : optionals and response
+ ;;Unwrap-err-panic! : optionals and response
+ ;;Try! : optionals and response
+
