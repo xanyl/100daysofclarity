@@ -36,3 +36,16 @@
 (define-read-only (index-of-principal-list (value principal))  
     (index-of (var-get principal-list) value)
 )
+
+
+;;Day-21 list Cont. and Intro to Unwrapping
+ (define-data-var list-day-21 (list 5 uint) (list u1 u2 u3 u4 u5))
+ (define-read-only (list-length) 
+    (len (var-get list-day-21))
+ )
+
+ (define-public (add-to-list (new-num uint)) 
+    (ok (var-set list-day-21
+        (as-max-len? (var-get list-day-21) u5))
+    ))
+ )
