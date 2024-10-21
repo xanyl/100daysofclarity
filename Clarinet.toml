@@ -1,0 +1,34 @@
+[project]
+name = '100daysofclarity'
+description = ''
+authors = []
+telemetry = true
+cache_dir = '.cache'
+requirements = []
+[contracts.clarity-basics-i]
+path = 'contracts/clarity-basics-i.clar'
+clarity_version = 1
+epoch = 2.05
+
+[contracts.clarity-basics-ii]
+path = 'contracts/clarity-basics-ii.clar'
+clarity_version = 1
+epoch = 2.05
+
+[contracts.clarity-basics-iii]
+path = 'contracts/clarity-basics-iii.clar'
+clarity_version = 2
+epoch = 2.5
+
+[contracts.community-hello-world]
+path = 'contracts/community-hello-world.clar'
+clarity_version = 2
+epoch = 2.5
+[repl.analysis]
+passes = ['check_checker']
+
+[repl.analysis.check_checker]
+strict = false
+trusted_sender = false
+trusted_caller = false
+callee_filter = false
