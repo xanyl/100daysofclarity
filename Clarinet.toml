@@ -5,6 +5,11 @@ authors = []
 telemetry = true
 cache_dir = '.cache'
 requirements = []
+[contracts.artist-discography]
+path = 'contracts/artist-discography.clar'
+clarity_version = 2
+epoch = 2.5
+
 [contracts.clarity-basics-i]
 path = 'contracts/clarity-basics-i.clar'
 clarity_version = 1
@@ -17,6 +22,11 @@ epoch = 2.05
 
 [contracts.clarity-basics-iii]
 path = 'contracts/clarity-basics-iii.clar'
+clarity_version = 2
+epoch = 2.5
+
+[contracts.clarity-basics-iv]
+path = 'contracts/clarity-basics-iv.clar'
 clarity_version = 2
 epoch = 2.5
 
