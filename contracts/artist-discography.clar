@@ -17,6 +17,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;; Cons,vars, and Maps ;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;Admin list of principals
+(define-data-var admins (list 10 principal) (list tx-sender))
+
+;;Map that keeps track od a single album
 (define-map track { artist:principal,album-id:uint, track-id:uint } {
     title: (string-ascii 24),
     duration: uint,
@@ -71,32 +76,74 @@
 ;;@param - duration uint - the duration of the track
 ;;@param - featured (optional principal) - the featured artist
 ;;@param - album-id uint - the album id
-(define-public (add-a-track (artist (optional principal)) (title (string-ascii 24)) (duration uint) (featured (optional principal)) (album-id uint)) 
+(define-public (add-a-track (artist principal) (title (string-ascii 24)) (duration uint) (featured (optional principal)) (album-id uint)) 
     (let 
-    (
-        (test u0)
-    ) 
+        (
+            (current-discography (unwrap! (map-get? discography artist) (err u0)))
+            (current-album (unwrap! (index-of current-discography album-id) (err u2)))
+            (current-album-data (unwrap! (map-get? album {artist: artist, album-id:album-id}) (err u3)))
+            (current-album-tracks (get tracks current-album-data))
+            (current-album-track-id (len current-album-tracks))
+            (next-album-track-id (+ current-album-track-id u1))
+         ) 
     ;;Assert that tx-sender is either artist or admin
+    (asserts! (or (is-eq tx-sender artist) (is-some (index-of? (var-get admins) tx-sender))) (err u1))
     ;;assert tht album exists in discography
+   ;; (asserts! (is-some current-album) (err u2))
     ;;Assert that duration is less than 600 (10 mins)
+    (asserts! (< duration u600) (err u3))
     ;;Map-set new track
-    ;;Map-set append track to album
-        (ok test)
+    (map-set track {artist: artist, album-id:album-id, track-id:next-album-track-id} 
+        {title: title, duration: duration, featured: featured}
     )
-)
+    ;;Map-set append track to album
+    (ok (map-set album {artist: artist, album-id:album-id} 
+        (merge 
+            current-album-data 
+            {tracks: (unwrap! (as-max-len? (append current-album-tracks next-album-track-id) u20) (err u4))}
+        )
+    )
+    )
+    )
+    )
 ;; Add an album to the discography
 ;;@desc - function that allows a user or admin to add an album to the discography or start a new discography amd then add an album to the discography   
 ;;@param - title (string-ascii 24) - the title of the album
 ;;@param - tracks (list 20 uint) - the list of tracks in the album
 ;;@param - height-published uint - the height at which the album was published
-(define-public (add-album-or-create-discography-and-add-album (artist (optional principal)) (album-title (string-ascii 24)) )
+(define-public (add-album-or-create-discography-and-add-album (artist  principal) (album-title (string-ascii 24)) )
     (let 
     (
-        ;;this is where local vars are defined
-
+            (current-discography (default-to (list ) (map-get? discography artist)))
+            (current-album-id (len current-discography))
+            (next-album-id (+ current-album-id u1))
     )
     ;; Check whether the discography exists / if discography is-some
-    
+    (
+        if (is-eq current-album-id u0)
+        (begin  
+        ;;empty discography
+        (map-set discography artist (list current-album-id))
+        (map-set album {artist: artist, album-id: current-album-id} {
+            title: album-title,
+            tracks: (list u0),
+            height-published: block-height
+        })
+        )
+        
+        ;;discography does exist
+        (begin 
+
+        (map-set discography artist (unwrap! (as-max-len? (append current-discography next-album-id) u10) (err u4)))
+        (map-set album {artist: artist, album-id: next-album-id} {
+            title: album-title,
+            tracks: (list u0),
+            height-published: block-height
+        })
+        )
+        
+        
+    )
         ;;Discography exists
             ;;Map-set new album to discography
 
@@ -111,6 +158,13 @@
 
             
     ;;this is where the body goes
+
+;;     (define-map album { artist:principal, album-id:uint } { 
+;;     title: (string-ascii 24),
+;;     tracks: (list 20 uint),
+;;     height-published: uint
+;;  })
+
     (ok true)
     ) 
    
