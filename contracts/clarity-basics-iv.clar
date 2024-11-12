@@ -93,11 +93,32 @@
 (define-public (transfer-stx (to-address principal) (amount uint))
     (stx-transfer? amount tx-sender to-address)  
 )
-
+;;sending stx to multiple addresses
 (define-public (send-stx-double) 
     (begin  
         (unwrap! (stx-transfer? u1000000000 tx-sender  'ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5) (err u0))
         (unwrap! (stx-transfer? u1000000000 tx-sender  'ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG) (err u1))
         (ok true)
     )
+)
+
+;;Day 34 : Stx-get-balance and Burn
+
+;;Get Balance
+;;Stx burn
+
+(define-read-only (balance-of) 
+    (stx-get-balance tx-sender)
+)
+
+(define-public (send-stx-balance (to-address principal))
+    (stx-transfer? (balance-of) tx-sender to-address)  
+)
+
+(define-public (burn-some (amount uint)) 
+    (stx-burn? amount tx-sender)
+)
+
+(define-public (burn-half-of-balance) 
+    (stx-burn? (/ (stx-get-balance tx-sender) u2) tx-sender)
 )
