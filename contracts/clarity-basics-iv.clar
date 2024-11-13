@@ -157,3 +157,12 @@
 (define-public (send-to-contract-context) 
     (stx-transfer? u100000 tx-sender (as-contract tx-sender))
 )
+
+;;Contract to principal
+(define-public (send-to-principal-literal)
+    (as-contract (stx-transfer? u100000 tx-sender 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM))
+)
+
+(define-public (send-to-contract)
+    (stx-transfer? u100000 (as-contract tx-sender) tx-sender)
+)
