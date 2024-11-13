@@ -122,3 +122,38 @@
 (define-public (burn-half-of-balance) 
     (stx-burn? (/ (stx-get-balance tx-sender) u2) tx-sender)
 )
+
+;;Day 35 : block-height
+
+(define-read-only (read-current-height) 
+    block-height
+)
+
+(define-constant day-in-blocks u144)
+(define-read-only (has-a-day-passed) 
+    (if (> block-height day-in-blocks)
+        true
+        false
+    )
+)
+
+(define-read-only (has-a-week-passed) 
+    (if (> block-height (* day-in-blocks u7) )
+        true
+        false
+    )
+)
+
+(define-constant admin tx-sender)
+
+(define-constant deploy-height block-height)
+
+;;Day 36: As-contract 
+;;Principal to contract
+
+(define-public (send-to-contract-literal) 
+    (stx-transfer? u100000 tx-sender 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.clarity-basics-iv)
+)
+(define-public (send-to-contract-context) 
+    (stx-transfer? u100000 tx-sender (as-contract tx-sender))
+)
