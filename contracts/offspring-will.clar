@@ -6,11 +6,24 @@
 ;;This is our main map that is created and funded by parents and only unlockkable by assigned offspring(principal)
 ;;Principal -> {offspring-principal: principal, offspring-dob: uint, balance: uint, is-unlocked: bool}
 
+;;1. Create wallet
+;;2. Add funds to wallet
+;;3. Claim wallet
+    ;;A. Offspring
+    ;;B. Parent/Admin
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;; Cons, Vars & Maps ;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;Deployer
+(define-constant deployer tx-sender)
+
+;;Contract
+(define-constant contract (as-contract tx-sender))
+
 
 ;; Create Offspring wallet fee
 (define-constant create-wallet-fee u5000000)
@@ -88,13 +101,59 @@
    (ok (+ offspring-dob eighteen-years-in-block-height))
     )
 ) 
+;; Get Earned Fees
+(define-read-only (get-earned-fees) 
+    (var-get total-fees-earned)
+    )
+
+;; Get STX In Contract
+(define-read-only (get-contract-stx-balance)
+    (stx-get-balance contract)
+)
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;; Parents Functions ;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;Create wallet
+;;@desc - creates new offspring wallet with new parent (no initial deposits)
+;;@param - parent: principal - parent principal
+;;@param - new-offspring-principal: principal - offspring principal
+;;@param - new-offspring-dob: uint - offspring dob
+
+(define-public (create-wallet (new-offspring-principal principal) (new-offspring-dob uint)) 
+    (let (
+        (test true)
+    ) 
+    ;; Assert that map-get? offspring-wallet is-none
+
+    ;; Assert that new-offspring-principal is at least higher than block-height - 18 Years of Blocks
+
+    ;; Map-set offspring-wallet
 
 
+
+    ;;Body function here
+    (ok test)
+    )
+)
+
+;; Fund Wallet 
+;;@desc - allows anyone to fund an existing wallet
+;;@param - parent: principal - parent principal, amount: uint - amount to fund, 
+
+(define-public (add-funds (parent principal) (amount uint))
+    (let
+        (
+        ;; Local vars here
+        (test true)
+        )
+        ;;func body here
+        (ok test)
+    )
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;; Offspring Functions ;;;;;;;
