@@ -10,6 +10,11 @@ path = 'contracts/artist-discography.clar'
 clarity_version = 2
 epoch = 2.5
 
+[contracts.clarinet-basics-v]
+path = 'contracts/clarinet-basics-v.clar'
+clarity_version = 2
+epoch = 2.5
+
 [contracts.clarity-basics-i]
 path = 'contracts/clarity-basics-i.clar'
 clarity_version = 1
@@ -34,8 +39,6 @@ epoch = 2.5
 path = 'contracts/community-hello-world.clar'
 clarity_version = 2
 epoch = 2.5
-
-
 
 [contracts.offspring-will]
 path = 'contracts/offspring-will.clar'

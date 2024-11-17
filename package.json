@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "@stacks/cli": "^6.17.0"
+    "@stacks/cli": "^4.1.0"
   }
 }
