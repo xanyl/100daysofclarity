@@ -155,3 +155,32 @@
 (define-public (test-nft-transfer (id uint) (sender principal) (recipient principal)) 
     (nft-transfer? nft-test id sender recipient)
 )
+
+;; Day-53 - Basic Minting Logic
+
+(define-non-fungible-token nft-test-2 uint)
+(define-data-var nft-index uint u1)
+(define-constant nft-limit u6)
+(define-constant nft-price u10000000)
+(define-constant nft-admin tx-sender)
+
+(define-public (free-limited-mint) 
+    (let (
+        ;; Local Vars go here
+        (current-index (var-get nft-index))
+        (next-index (+ current-index u1))
+    ) 
+
+        ;; Assert that index < limit
+        (asserts! (< current-index nft-limit) (err "nft limit reached"))
+
+        ;; Charge 10 stx
+        (unwrap! (stx-transfer? nft-price tx-sender nft-admin ) (err "stx-transfer-err"))
+
+        ;;Mint nft to tx-sender
+        (unwrap! (nft-mint? nft-test-2 current-index tx-sender) (err "nft mint failed"))
+        
+        ;; Var-set nft-index by increasing it by 1
+        (ok (var-set nft-index next-index)) 
+    )
+)
