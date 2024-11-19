@@ -135,3 +135,23 @@
     )
     
 )
+
+;;Day-52 - Native NFTs Functions
+;; (impl-trait .sip-09.nft-trait)
+
+(define-non-fungible-token nft-test uint)
+(define-public (test-mint) 
+    (nft-mint? nft-test u0 tx-sender)
+)
+
+(define-read-only (test-get-owner (id uint)) 
+    (nft-get-owner? nft-test id)
+)
+
+(define-public (test-burn (id uint) (sender principal))
+    (nft-burn? nft-test id sender)
+)
+
+(define-public (test-nft-transfer (id uint) (sender principal) (recipient principal)) 
+    (nft-transfer? nft-test id sender recipient)
+)
