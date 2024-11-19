@@ -109,7 +109,7 @@
 
 (define-read-only (new-and) 
     (and (> u2 u1) false)
-)
+) 
 
 (define-read-only (or-v) 
     (or (not true) true)
