@@ -35,6 +35,11 @@ path = 'contracts/clarity-basics-iv.clar'
 clarity_version = 2
 epoch = 2.5
 
+[contracts.clarity-basics-vil]
+path = 'contracts/clarity-basics-vil.clar'
+clarity_version = 2
+epoch = 2.5
+
 [contracts.community-hello-world]
 path = 'contracts/community-hello-world.clar'
 clarity_version = 2
