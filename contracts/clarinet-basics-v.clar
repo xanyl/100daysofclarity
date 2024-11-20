@@ -164,7 +164,7 @@
 (define-constant nft-price u10000000)
 (define-constant nft-admin tx-sender)
 
-(define-public (free-limited-mint) 
+(define-public (limited-mint (metadata-url (string-ascii 256))) 
     (let (
         ;; Local Vars go here
         (current-index (var-get nft-index))
@@ -179,8 +179,23 @@
 
         ;;Mint nft to tx-sender
         (unwrap! (nft-mint? nft-test-2 current-index tx-sender) (err "nft mint failed"))
-        
+        ;;Upadate and store metadata url
+        (map-set nft-metadata current-index metadata-url)
         ;; Var-set nft-index by increasing it by 1
         (ok (var-set nft-index next-index)) 
     )
+)
+
+;; Day 54 - NFT Metadata Logic
+(define-constant static-url "https://ipfs.io/ipfs/QmYXZ8Ef3Q86aN12Q1aMZehGXk7Qau7J378MZxw4rZ2F8")
+(define-map nft-metadata uint  (string-ascii 256))
+(define-public (get-token-uri-test-1 (id uint)) 
+    (ok static-url)
+)
+;; (define-public (get-token-uri-test-2 (id uint)) 
+;;     (ok (concat static-url (concat (uint-to-ascii id) ".json")))
+;; )
+
+(define-public (get-token-uri (id uint)) 
+   (ok (map-get? nft-metadata id))
 )
