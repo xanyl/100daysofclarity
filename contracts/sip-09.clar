@@ -11,7 +11,7 @@
         ;; URI metadata
         (get-token-uri (uint) (response (optional (string-ascii 256)) uint))
         ;;Get token owner
-        (get-token-owner (uint) (response (optional principal) uint))
+        (get-owner (uint) (response (optional principal) uint))
         ;; Transfer 
         (transfer (uint principal principal) (response bool uint))
     )
