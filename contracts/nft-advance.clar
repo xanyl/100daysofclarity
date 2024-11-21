@@ -27,6 +27,9 @@
 ;; Collection Index
 (define-data-var collection-index uint u1)
 
+;; Admin deployer
+ (define-constant deployer  tx-sender)
+
 ;; Root URI
 (define-constant collection-root-uri "ipfs://ipfs/QmXhJzF3A7Whh6cW3m11m81a6q3zp3vZH36YwL18Lu3a8/" )
 
@@ -153,10 +156,59 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Mint 1
+(define-public (mint-one) 
+    (let (
+        (current-index (var-get collection-index))
+        (next-index (+ current-index u1))
+        (whitelist-mints (unwrap! (map-get? whitelist-map tx-sender) (err "err-not-whitelisted")))
+
+    )
+        ;; Assert that collection is not minted out (Current-index < collection-limit)
+        (asserts! (< current-index (var-get collection-index)) (err "err-collection-minted-out"))
+
+
+        ;; Assert that user has mints left (Whitelist-mints > 0)
+        (asserts! (> whitelist-mints u0) (err "err-whitelist-mint-limit-reached"))
+
+
+        ;; STX transfer / pay for the mint
+        (unwrap! (stx-transfer? advance-nft-price tx-sender deployer) (err "err-stx-transfer"))
+
+        ;; Mint NFT to tx-sender
+        (unwrap! (nft-mint? advance-nft current-index tx-sender) (err "err-nft-mint"))
+
+        ;; Var-set collection-index to next-index
+       (var-set collection-index next-index)
+
+
+        ;; map-set Whitelist-mints to whitelist-mints - 1
+        (ok (map-set whitelist-map tx-sender (- whitelist-mints u1)))
+        
+        ;; (ok true)
+    )
+)
 
 ;; Mint 2
+(define-public (mint-two) 
+    (begin 
+        (unwrap! (mint-one) (err "err-mint-one"))
+        (ok (unwrap! (mint-one) (err "err-mint-two")))
+     )
+
+)
 
 ;; Mint 5
+(define-public (mint-five) 
+    (begin 
+        
+        (unwrap! (mint-one) (err "err-mint-one"))
+        (unwrap! (mint-one) (err "err-mint-two"))
+        (unwrap! (mint-one) (err "err-mint-three"))
+        (unwrap! (mint-one) (err "err-mint-four"))
+        (ok (unwrap! (mint-one) (err "err-mint-five")))
+     )
+
+)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
