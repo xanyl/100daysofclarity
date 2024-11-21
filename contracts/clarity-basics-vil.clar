@@ -71,8 +71,36 @@
 )
 
 (define-public (unlist-in-stx (item uint)) 
-    (ok true)
+    (let (
+        (current-listing (unwrap! (map-get? market item) (err "err-listing-not-found")))
+        (current-price (get price current-listing))
+        (current-owner (get owner current-listing))
+    )
+    ;;Assert that tx-sender is-eq to NFT owner
+    (asserts! (is-eq tx-sender current-owner) (err "err-not-owner"))
+
+    ;;Map Delete existing listing
+    (ok (map-delete market item))
+    ;; (ok true)    
+    )
 )
+
+
 (define-public (buy-in-ustx (item uint)) 
-    (ok true)
+    (let (
+        (current-listing (unwrap! (map-get? market item) (err "err-listing-not-found")))
+        (current-price (get price current-listing))
+        (current-owner (get owner current-listing))
+
+    )
+    ;; Tx-sender buys by transfering STX 
+    (unwrap! (stx-transfer? current-price tx-sender current-owner) (err "err-stx-transfer"))
+    
+    ;; Transfer NFT to new Buyer
+    (unwrap! (nft-transfer? test-nft item current-owner tx-sender) (err " err-nft-transfer"))
+   
+    ;; Map-Delete the listing
+    (ok (map-delete market item))
+    )
 )
+
