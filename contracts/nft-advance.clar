@@ -164,7 +164,7 @@
 
     )
         ;; Assert that collection is not minted out (Current-index < collection-limit)
-        (asserts! (< current-index (var-get collection-index)) (err "err-collection-minted-out"))
+        (asserts! (< current-index collection-limit) (err "err-collection-minted-out"))
 
 
         ;; Assert that user has mints left (Whitelist-mints > 0)
@@ -187,6 +187,17 @@
         ;; (ok true)
     )
 )
+
+;; (contract-call? .nft-advance whitelist-principal 'ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5 u1)
+;; (ok true)
+;; >> ::set_tx_sender ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5
+;; tx-sender switched to ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5
+;; >> (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.nft-advance mint-one)
+;; Events emitted
+;; {"type":"stx_transfer_event","stx_transfer_event":{"sender":"ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5","recipient":"ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM","amount":"10000000","memo":""}}
+;; {"type":"nft_mint_event","nft_mint_event":{"asset_identifier":"ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.nft-advance::advance-nft","recipient":"ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5","value":"u1"}}
+;; (ok true)
+;; >>
 
 ;; Mint 2
 (define-public (mint-two) 
@@ -216,9 +227,31 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Add Whitelist
+(define-public (whitelist-principal (user principal) (mints uint)) 
+    (let (
+
+    (whitelist-mints  (map-get? whitelist-map user) )
+
+
+    )
+    ;; Assert that tx-sender is an admin
+    (asserts! (is-some (index-of? (var-get admins) tx-sender)) (err "err-not-admin"))
+
+    ;; Assert that whitelist-mints is none
+    (asserts! (is-none whitelist-mints) (err "err-whitelist-already-exists"))
+    
+
+    ;; Map set the whitelist-map
+    (ok (map-set whitelist-map user mints))
+    ;; (ok true)
+    )
+)
+
 
 ;; Check Whitelist status
-
+(define-read-only (whitelist-status (user principal)) 
+    (map-get? whitelist-map user)
+)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -226,8 +259,34 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Add Admin
+(define-public (add-admin (new-admin principal))
+    (let (
+        (current-admins (var-get admins))
+
+    )
+    
+    ;; Assert that tx-sender is an admin
+    (asserts! (is-some (index-of? (var-get admins) tx-sender)) (err "err-not-admin"))
+
+    ;; Assert that new-admin is not already an admin
+
+    (asserts! (not (is-some (index-of? current-admins new-admin))) (err "err-admin-already-exists"))
+
+
+    ;; Var-set admins to current-admins + new-admin
+    (ok (var-set admins (unwrap! (as-max-len? (append current-admins new-admin) u10) (err "err-admin-overflow"))))
+
+        ;; (ok true)
+    )
+)
 
 ;; Remove Admin
+;; (define-public (remove-admin (admin-to-remove principal))
+;;     (let (
+;;         (current-admins (var-get admins))
+;;     )
+;;     )
+;; )
 
 ;; Remove admin helper
 
