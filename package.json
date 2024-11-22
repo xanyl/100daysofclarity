@@ -1,9 +1,5 @@
 {
   "dependencies": {
     "@stacks/cli": "^4.1.0"
-  },
-  "scripts": {
-  "test": "clarinet integrate"
-}
-
+  }
 }

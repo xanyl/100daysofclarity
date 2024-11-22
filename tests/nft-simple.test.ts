@@ -37,10 +37,13 @@ Clarinet.test({
 
     console.log(block.receipts[0].result.expectOk().expectBool(true));
     block.receipts[0].events.expectNonFungibleTokenMintEvent(
-      10000000,
+      types.uint(1),
       wallet_1.address,
-      deployer.address
+      `${deployer.address}.nft-simple`,
+      "simple-nft"
 
     )
   }
 })
+
+
