@@ -11,7 +11,7 @@ plan:
         - contract-publish:
             contract-name: clarity-basics-i
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            cost: 19680
+            cost: 19690
             path: "contracts\\clarity-basics-i.clar"
             anchor-block-only: true
             clarity-version: 1
@@ -40,6 +40,13 @@ plan:
             anchor-block-only: true
             clarity-version: 2
         - contract-publish:
+            contract-name: clarinet-basics-v
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 55280
+            path: "contracts\\clarinet-basics-v.clar"
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
             contract-name: clarity-basics-iv
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             cost: 49290
@@ -47,10 +54,38 @@ plan:
             anchor-block-only: true
             clarity-version: 2
         - contract-publish:
+            contract-name: clarity-basics-vil
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 32490
+            path: "contracts\\clarity-basics-vil.clar"
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
             contract-name: community-hello-world
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             cost: 32950
             path: "contracts\\community-hello-world.clar"
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: nft-advance
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 81130
+            path: "contracts\\nft-advance.clar"
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: sip-09
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 5190
+            path: "contracts\\sip-09.clar"
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: nft-simple
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 27320
+            path: "contracts\\nft-simple.clar"
             anchor-block-only: true
             clarity-version: 2
         - contract-publish:
