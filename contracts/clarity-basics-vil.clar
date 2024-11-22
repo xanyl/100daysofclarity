@@ -104,3 +104,18 @@
     )
 )
 
+;; Day 66 : Use-Trait to make Dynamic Contract calls
+
+(use-trait nft .sip-09.nft-trait)
+
+;;GEt last Id
+
+(define-public (get-last-id (nft-principal <nft>)) 
+    (contract-call? nft-principal get-last-token-id)
+)
+
+
+;; Get owner
+(define-public (get-owner (nft-principal <nft>) (item uint))
+        (contract-call? nft-principal get-owner item)
+)
