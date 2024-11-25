@@ -2,23 +2,23 @@
 ;; Contract that provides a list of all the albums by an artist and the number of tracks on each album.
 ;; Written by Anil Tiwari
 
-;;Discography of an artist
+;; Discography of an artist
 ;; The artist or an admin can add an album to the discography and remove an album from the discography.
 
-;;Albumm
+;; Albumm
 ;; An album is a list of tracks + some additional info (such as when it was published, the artist, etc.)
-;;The artist or an admin can start an album and can add/remove tracks
+;; The artist or an admin can start an album and can add/remove tracks
 
 
 ;; Track
 ;; A track is made up of a name and a duration,and possible feature (optional feature)
 ;; The artist or an admin can add a track to an album and remove a track from an album
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;; Cons,vars, and Maps ;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;; Cons,vars, and Maps ;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;Admin list of principals
+;; Admin list of principals
 (define-data-var admins (list 10 principal) (list tx-sender))
 
 ;;Map that keeps track od a single album
