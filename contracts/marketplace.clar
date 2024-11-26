@@ -86,20 +86,32 @@
 ;; @param - nft-collection: nft-trait, nft-item: uint
 
 (define-public (buy-item (nft-collection <nft>) (nft-item uint)) 
+
     (let 
     (
         (test true)
-
+        (current-collection (unwrap! (map-get? collection (contract-of nft-collection)) (err "err-collection-not-whitelisted")))
+        (current-royality-percent (get royality-percent current-collection))
+        (current-royality-address (get royality-address current-collection))
+        (current-listing (unwrap! (map-get? item-status {collection: (contract-of nft-collection), item: nft-item}) (err "err-item-not-listed")))
+        (current-collection-listings (unwrap! (map-get? collection-listing (contract-of nft-collection)) (err "err-collection-has-no-listing")))
+        (current-listing-price (get price current-listing))
+        (current-listing-royalty (/ (* current-listing-price current-royality-percent)))
+        (current-listing-owner (get owner current-listing))
+        
         )
-    ;; Assert NFT collection is whitelisted
 
     ;; Assert that item is listed
+    (asserts! (is-some (index-of current-collection-listings nft-item)) (err "err-item-not-listed"))
 
     ;; Assert tx sender is not the owner of the NFT
+    (asserts! (not (is-eq tx-sender current-listing-owner)) (err "err-buyer-is-owner"))
 
-    ;; Send STX (price - roayality) to owner
+    ;; Send STX (price ) to owner
+    (unwrap! (stx-transfer? current-listing-price tx-sender current-listing-owner) (err "err-stx-transfer-price"))
 
     ;; Send STX (royality) to royality/artist address
+    (unwrap! (stx-transfer? current-listing-royalty tx-sender current-royality-address) (err "err-stx-transfer-royality"))
 
     ;; Transfer NFT from custodial/contract to buyer
 
