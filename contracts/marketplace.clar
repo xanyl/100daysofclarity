@@ -86,6 +86,21 @@
         (test true)
 
         )
+    ;; Assert NFT collection is whitelisted
+
+    ;; Assert that item is listed
+
+    ;; Assert tx sender is not the owner of the NFT
+
+    ;; Send STX (price - roayality) to owner
+
+    ;; Send STX (royality) to royality/artist address
+
+    ;; Transfer NFT from custodial/contract to buyer
+
+    ;; Map-delete item-listing
+
+
     (ok test)
     )
 )
@@ -97,11 +112,78 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; List item
+;; @desc - function that allow an owner to list an NFT
+;; @param - collection: <nft-trait>, item: uint
+(define-public (list-item (nft-collection <nft>) (nft-item uint) (nft-price uint))
+    (let (
+
+        (test true)
+    )
+    ;; Assert that tx sender is the current owner of the NFT
+
+    ;; Assert that collection is whitelisted
+
+    ;; Assert NFT item is not in collection-listing
+
+    ;; Assert item-status is-none
+
+    ;; Transfer NFT from tx-sender to contract
+
+    ;; Map-set item-status w/ new price AND owner (tx-sender)
+
+    ;; map-set collection-listing 
+
+    (ok test)
+    )
+)
 
 ;; Unlist item
 
+(define-public (unlist-item (nft-collection <nft>) (nft-item uint) ) 
+    (let (
+        (test true)
+    )
+
+    ;; Assert that current NFT owner is contract
+
+    ;; Assert item -status is-some
+
+    ;; Assert that owner property from item-status tuple is tx-sender
+
+    ;; Assert that uint is in collection-listing map 
+
+    ;; Transfer NFT back from contract to tx-sender/original owner
+
+    ;; Map-set collection-listing (remove uint)
+
+    ;; Map-set item-status (delete entry)
+    (ok test)
+    )
+)
+
 ;; Change Price
 
+(define-public (change-price (nft-collection <nft>)) 
+    (let
+        (
+            (test true)
+        )
+
+        ;; Assert nft-item is in collection-listing
+
+        ;; Assert nft-item item-status map-get is-some
+
+        ;; Assert nft current owner is contract
+
+        ;; Assert that tx-sender is owner from item-status tuple
+
+        ;; Map-set item-status (update price)
+
+        ;; 
+
+        (ok test)
+    )
+)
 
 
 ;;
