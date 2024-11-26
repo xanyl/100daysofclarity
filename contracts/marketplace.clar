@@ -32,13 +32,18 @@
 (define-data-var admins (list 10 principal) (list tx-sender))
 
 ;; Whitelist collections map
-(define-map whitelisted-collections principal bool)
+;; (define-map whitelisted-collections principal bool)
 
 ;; Whitelist collection
+;; three states
+;; 1. is-none -> collection is not whitelisted
+;; 2. false -> collection has not been approved
+;; 3. true -> collection has been pproved by admin
 (define-map collection principal {
     name: (string-ascii 64),
     royality-percent: uint,
-    royality-address: principal
+    royality-address: principal,
+    whitelisted: bool,
 })
 
 ;; List of all for sale in collection
@@ -57,7 +62,7 @@
 
 ;; Get all whitelisted collections
 (define-read-only (is-collection-whitelisted (nft-collection principal)) 
-  (map-get? whitelisted-collections nft-collection)
+  (map-get? collection nft-collection)
 )
 
 ;; Get all listed items in a collection
@@ -193,8 +198,36 @@
 
 ;; Submit Collection
 
+(define-public (submit-collection (nft-collection <nft>) (royality-percent uint)) 
+    (let (
+        (test true)
+    )
+
+    ;; Assert that collection is not already whitelisted by making sure it is is-none
+
+    ;; Assert that tx-sender is deployer of nft parameter 
+
+    ;; Map-set  whitelisted-collections (tx-sender)
+
+        (ok test)
+    )
+)
+
 ;; Change  Royality address
 
+(define-public (change-royality-address (nft-collection principal) (new-royality principal)) 
+    (let (
+        (test true)
+    )
+    ;; Assert that collection is whitelisted
+
+    ;; Assert that tx-sender is current royality address
+
+    ;; Map-set / merge existing collection tuple w/ royality-address
+
+    (ok test)
+    )
+)
 ;;
 
 
@@ -204,12 +237,58 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Accept/reject whitelisting
+(define-public (whitelisting-approval (nft-collection principal )) 
+    (let (
+        (test true)
+    )
+    ;; Assert that whitelisting exists / is-some
+
+    ;; Assert that tx-sender is admin
+
+    ;; Map-set nft-collection with true as whitelisted value
+
+
+    (ok test)
+    )
+)
 
 ;; Add an admin
+(define-public (add-admin (new-admin principal))
+    (let (
+
+    )
+    
+    ;; Assert that tx-sender is an admin
+
+    ;; Assert that new-admin is not already an admin
+
+
+
+    ;; Var-set admins to current-admins + new-admin
+
+        (ok true)
+    )
+)
+
 
 ;; Remove admin
 
+(define-public (remove-admin (admin principal)) 
+    (let (
+        (test true)
 
+    )
+    
+    ;;Assert that tx-sender is an admin
+
+    ;; Assert that remove-admin exists
+
+    ;; Var-set helper function
+
+    ;; Filter-out remove admin   
+(ok test)
+    )
+)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;; Cons, Vars & Maps ;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
