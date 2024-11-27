@@ -144,11 +144,15 @@
         (test true)
          (current-nft-owner (unwrap! (contract-call? nft-collection get-owner nft-item) (err "err-nft-owner-not-found")))
         (current-collection-listing (unwrap! (map-get? collection-listing (contract-of nft-collection)) (err "err-collection-has-no-listing")))
+        (current-collection (unwrap! (map-get? collection (contract-of nft-collection)) (err "err-collection-not-whitelisted")))
+        (current-collection-whitelist (get whitelisted current-collection))
+    
+    
     )
     ;; Assert that tx sender is the current owner of the NFT
     (asserts! (is-eq (some tx-sender) current-nft-owner) (err "err-tx-sender-not-owner"))
     ;; Assert that collection is whitelisted
-    (asserts! (is-some (map-get? collection (contract-of nft-collection ))) (err "err-collection-not-whitelisted"))
+    (asserts! current-collection-whitelist (err "err-collection-not-whitelisted"))
 
     ;; Assert item-status is-none
     (asserts! (is-none (map-get? item-status {collection: (contract-of nft-collection), item: nft-item})) (err "err-item-already-listed"))
@@ -174,12 +178,23 @@
 
 (define-public (unlist-item (nft-collection <nft>) (nft-item uint) ) 
     (let (
-        (test true)
+        (current-collection (unwrap! (map-get? collection (contract-of nft-collection)) (err "err-collection-not-whitelisted")))
+        (current-royality-percent (get royality-percent current-collection))
+        (current-royality-address (get royality-address current-collection))
+        (current-listing (unwrap! (map-get? item-status {collection: (contract-of nft-collection), item:nft-item}) (err "err-item-not-listed")))
+        (current-collection-listings (unwrap! (map-get? collection-listing (contract-of nft-collection)) (err "err-collection-has-no-listing")))
+        (current-listing-price (get price current-listing))
+        (current-listing-royalty (/ (* current-listing-price current-royality-percent)))
+        (current-listing-owner (get owner current-listing))
+        (current-nft-owner (unwrap! (contract-call? nft-collection get-owner nft-item) (err "err-nft-owner-not-found")))
+        
     )
 
     ;; Assert that current NFT owner is contract
+     (asserts!  (is-eq  (some (as-contract tx-sender)) current-nft-owner) (err "err-nft-owner-not-contract"))
 
-    ;; Assert item -status is-some
+    ;; Assert that tx-sender is-eq to current-listing-ow
+
 
     ;; Assert that owner property from item-status tuple is tx-sender
 
