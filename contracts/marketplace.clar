@@ -92,15 +92,15 @@
 
     (let 
         (
-        (current-collection (unwrap! (map-get? collection (contract-of nft-collection)) (err "err-collection-not-whitelisted")))
-        (current-royality-percent (get royality-percent current-collection))
-        (current-royality-address (get royality-address current-collection))
-        (current-listing (unwrap! (map-get? item-status {collection: (contract-of nft-collection), item: nft-item}) (err "err-item-not-listed")))
-        (current-collection-listings (unwrap! (map-get? collection-listing (contract-of nft-collection)) (err "err-collection-has-no-listing")))
-        (current-listing-price (get price current-listing))
-        (current-listing-royalty (/ (* current-listing-price current-royality-percent)))
-        (current-listing-owner (get owner current-listing))
-        
+            (current-collection (unwrap! (map-get? collection (contract-of nft-collection)) (err "err-collection-not-whitelisted")))
+            (current-royality-percent (get royality-percent current-collection))
+            (current-royality-address (get royality-address current-collection))
+            (current-listing (unwrap! (map-get? item-status {collection: (contract-of nft-collection), item: nft-item}) (err "err-item-not-listed")))
+            (current-collection-listings (unwrap! (map-get? collection-listing (contract-of nft-collection)) (err "err-collection-has-no-listing")))
+            (current-listing-price (get price current-listing))
+            (current-listing-royalty (/ (* current-listing-price current-royality-percent)))
+            (current-listing-owner (get owner current-listing))
+            
         )
 
     ;; Assert that item is listed
@@ -123,10 +123,11 @@
     ;; Filter out nft-item from collection-listing
     ;; (filter remove-uint collection-listing)
     (var-set helper-uint nft-item)
-    (ok (map-set collection-listing (contract-of nft-collection) (filter remove-uint-from-list current-collection-listings)))
+
+    (ok (map-set collection-listing (contract-of nft-collection) (filter remove-uint-from-list current-collection-listings))))
    
   
-    )
+    
 )
 
 
@@ -187,25 +188,30 @@
         (current-listing-royalty (/ (* current-listing-price current-royality-percent)))
         (current-listing-owner (get owner current-listing))
         (current-nft-owner (unwrap! (contract-call? nft-collection get-owner nft-item) (err "err-nft-owner-not-found")))
-        
+        ;; (current-collection-whitelist (get whitelist current-collection))
     )
 
     ;; Assert that current NFT owner is contract
      (asserts!  (is-eq  (some (as-contract tx-sender)) current-nft-owner) (err "err-nft-owner-not-contract"))
 
-    ;; Assert that tx-sender is-eq to current-listing-ow
-
-
-    ;; Assert that owner property from item-status tuple is tx-sender
+    ;; Assert that tx-sender is-eq to current-listing-owner
+    (asserts! (is-eq tx-sender current-listing-owner) (err "err-not-listed-owner"))
+     
 
     ;; Assert that uint is in collection-listing map 
+    (asserts! (is-some (index-of? current-collection-listings nft-item)) (err "err-item-not-in-listings"))
 
     ;; Transfer NFT back from contract to tx-sender/original owner
+    (unwrap! (contract-call? nft-collection transfer nft-item (as-contract tx-sender) tx-sender) (err "err-returning-nft"))
 
-    ;; Map-set collection-listing (remove uint)
+       ;; Map-delete item-listing
+    (map-delete item-status {collection: (contract-of nft-collection), item: nft-item})
 
-    ;; Map-set item-status (delete entry)
-    (ok test)
+    ;; Filter out nft-item from collection-listing
+    ;; (filter remove-uint collection-listing)
+    (var-set helper-uint nft-item)
+    (ok (map-set collection-listing (contract-of nft-collection) (filter remove-uint-from-list current-collection-listings)))
+   
     )
 )
 
@@ -254,18 +260,24 @@
 
 ;; Submit Collection
 
-(define-public (submit-collection (nft-collection <nft>) (royality-percent uint)) 
-    (let (
-        (test true)
+(define-public (submit-collection (nft-collection <nft>) (collection-name (string-ascii 64)) (royality-percent uint)) 
+    (begin 
+
+    ;; Assert that both collection and collection listings is none
+    (asserts! (and (is-none (map-get? collection (contract-of nft-collection))) (is-none (map-get? collection-listing (contract-of nft-collection)))) (err "collection-already-exists"))
+
+    ;; Assert that royality is greator than u1 and lower than u20
+    (asserts! (and (< royality-percent u21) (> royality-percent u0)) (err "err-bad-royality"))
+    ;; Map-set new collection
+   (ok  (map-set collection (contract-of nft-collection) {
+            name: collection-name,
+            royality-percent: royality-percent,
+            royality-address: tx-sender,
+            whitelisted: false,
+        }
     )
-
-    ;; Assert that collection is not already whitelisted by making sure it is is-none
-
-    ;; Assert that tx-sender is deployer of nft parameter 
-
-    ;; Map-set  whitelisted-collections (tx-sender)
-
-        (ok test)
+   )
+        
     )
 )
 
@@ -295,19 +307,23 @@
 ;; Accept/reject whitelisting
 (define-public (whitelisting-approval (nft-collection principal )) 
     (let (
-        (test true)
-    )
+         (current-collection (unwrap! (map-get? collection  nft-collection) (err "err-collection-not-whitelisted")))
+         )
     ;; Assert that whitelisting exists / is-some
+        (asserts! (is-some (index-of? (var-get admins) tx-sender) ) (err "err-not-an-admin"))
 
-    ;; Assert that tx-sender is admin
+        ;; Map-set nft-collection with true as whitelisted value
+        (map-set collection nft-collection 
+            (merge current-collection 
+                {whitelisted: true}
+            )
+        )
 
-    ;; Map-set nft-collection with true as whitelisted value
 
-
-    (ok test)
-    )
+        (ok (map-set collection-listing nft-collection (list )))
+    
 )
-
+)
 ;; Add an admin
 (define-public (add-admin (new-admin principal))
     (let (
@@ -356,5 +372,6 @@
 
 ;; Remove uint from list
 (define-private (remove-uint-from-list (item-helper uint)) 
-    (not (is-eq item-helper) (var-get helper-uint))
+    (not (is-eq item-helper (var-get helper-uint)))
 ) 
+
