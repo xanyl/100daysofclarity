@@ -151,7 +151,7 @@
     
     )
     ;; Assert that tx sender is the current owner of the NFT
-    (asserts! (is-eq (some tx-sender) current-nft-owner) (err "err-tx-sender-not-owner"))
+    (asserts!  
     ;; Assert that collection is whitelisted
     (asserts! current-collection-whitelist (err "err-collection-not-whitelisted"))
 
@@ -374,4 +374,13 @@
 (define-private (remove-uint-from-list (item-helper uint)) 
     (not (is-eq item-helper (var-get helper-uint)))
 ) 
+
+;; 1. Artist submits the 
+    ;; Submit sime NFTs to the contract
+
+;; 2. Admin approves/whitelists the collection
+;; 3. User mints the NFT
+;; 4. User lists the NFT for sale
+;; 5. User buys the NFT
+;; 6. User unlists the NFT
 
